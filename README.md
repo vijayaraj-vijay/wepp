@@ -1,1 +1,50 @@
 # wepp
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Delivery</title>
+</head>
+<body>
+
+<h1>🍔 Food Menu</h1>
+
+<div id="menu"></div>
+
+<script>
+async function loadMenu() {
+    const res = await fetch("http://localhost:8080/menu");
+    const data = await res.json();
+
+    let html = "";
+    data.forEach(item => {
+        html += `
+            <div>
+                <h3>${item.name}</h3>
+                <p>${item.description}</p>
+                <p>₹${item.price}</p>
+                <button onclick="order(${item.id}, ${item.price})">Order</button>
+            </div>
+        `;
+    });
+
+    document.getElementById("menu").innerHTML = html;
+}
+
+async function order(id, price) {
+    await fetch("http://localhost:8080/order", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            user_id: 1,
+            total_price: price
+        })
+    });
+
+    alert("Order placed!");
+}
+
+loadMenu();
+</script>
+
+</body>
+</html>
